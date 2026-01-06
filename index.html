@@ -194,63 +194,18 @@
         </div>
     </div>
 
-<div id="settings-overlay" class="hidden">
-        <div class="settings-modal" id="settings-modal">
-            <div class="settings-header">
-                <h2>Dashboard Settings</h2>
-                <button class="close-btn" id="btn-close-settings">&times;</button>
-            </div>
-            
-            <div class="settings-body">
-                <h3>📊 Data Sources (CSV)</h3>
-                <label>Main Schedule URL</label>
-                <input type="text" id="cfg-sheet-url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv">
-                
-                <label>Topics/Syllabus URL</label>
-                <input type="text" id="cfg-topics-url">
-                
-                <label>Methods Sheet URL</label>
-                <input type="text" id="cfg-methods-url">
-
-                <div class="separator" style="margin: 15px 0; border-top: 1px solid #444;"></div>
-
-                <h3>🤖 Telegram Bot Setup</h3>
-                <p style="font-size: 0.8em; color: #888;">Configure your bot to receive notifications.</p>
-                
-                <label>Bot Token (@BotFather)</label>
-                <input type="text" id="cfg-tg-token" placeholder="12345:AAF...">
-
-                <label>Chat ID (@userinfobot)</label>
-                <input type="text" id="cfg-tg-id" placeholder="123456789">
-
-                <div class="separator" style="margin: 15px 0; border-top: 1px solid #444;"></div>
-
-                <h3>☁️ Personal Drive Sync</h3>
-                <p style="font-size: 0.8em; color: #888;">Saves everything to your Google Drive (Auto-save active).</p>
-                
-                <label>API URL (Google Script /exec)</label>
-                <input type="text" id="cfg-cloud-url" placeholder="https://script.google.com/.../exec">
-
-                <label>Secret Key (Password)</label>
-                <input type="password" id="cfg-cloud-key" placeholder="Your secret password">
-
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button id="btn-cloud-save" class="action-btn" style="background: #2e7d32; color: white;">⬆️ Force Upload</button>
-                    <button id="btn-cloud-load" class="action-btn" style="background: #1565c0; color: white;">⬇️ Force Download</button>
-                </div>
-                <div id="cloud-status" style="margin-top: 5px; font-size: 0.8em; color: #aaa; font-style: italic;"></div>
-
-                <div class="separator" style="margin: 15px 0; border-top: 1px solid #444;"></div>
-
-                <h3>📦 Manual Backup (File)</h3>
-                <div style="display: flex; gap: 10px;">
-                    <button id="btn-export" class="action-btn">📤 Export Code</button>
-                    <button id="btn-import" class="action-btn">📥 Import Code</button>
-                </div>
-            </div>
-
+    <div id="settings-overlay" class="hidden">
+        <div class="settings-modal">
+            <h3>Configuration</h3>
+            <label>Schedule Sheet URL (CSV)</label>
+            <input type="text" id="cfg-sheet-url">
+            <label>Topics Sheet URL (CSV)</label>
+            <input type="text" id="cfg-topics-url">
+            <label>Methods Sheet URL (CSV)</label>
+            <input type="text" id="cfg-methods-url">
             <div class="settings-actions">
-                <button id="btn-save-settings" class="save-btn">Save & Reload</button>
+                <button id="btn-save-settings">Save & Reload</button>
+                <button id="btn-close-settings" style="background: var(--text-muted);">Cancel</button>
             </div>
         </div>
     </div>
