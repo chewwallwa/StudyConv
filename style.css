@@ -1,0 +1,576 @@
+/* ============================================ 
+   DESIGN SYSTEM (VARIABLES) 
+   ============================================ */
+:root {
+    /* Colors (Gruvbox Light Default) */
+    --bg-color: #F2E5BC;
+    --card-bg: #d3c594;
+    --text-main: #000000;
+    --text-muted: #524d4d;
+    --text-current-activity: #000000;
+    --accent-red: #cc241d;
+    --accent-green: #98971a;
+    --accent-yellow: #d79921;
+    --accent-blue: #458588;
+    
+    /* Standardized Transparencies */
+    --dim-border: rgba(0,0,0,0.1);
+    --dim-bg: rgba(0,0,0,0.05);
+    --dim-card: rgba(0,0,0,0.03);
+    --dim-overlay: rgba(0,0,0,0.5);
+    --dim-shadow: rgba(0,0,0,0.2);
+
+    /* Layout & Sizes */
+    --radius-main: 20px;
+    --radius-small: 5px;
+    --width-card: 70%;
+    
+    /* Fonts */
+    --font-stack: 'Iosevka', 'Consolas', monospace;
+    
+    /* Animation */
+    --anim-speed: 0.4s;
+    --anim-curve: cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+[data-theme="dark"] {
+    --bg-color: #282828;
+    --card-bg: #3c3836;
+    --text-main: #ebdbb2;
+    --text-muted: #a89984;
+    --accent-red: #fb4934;
+    --accent-green: #b8bb26;
+    --accent-yellow: #fabd2f;
+    --text-current-activity: #3c3836;
+    
+    --dim-border: rgba(255,255,255,0.1);
+    --dim-bg: rgba(255,255,255,0.05);
+    --dim-card: rgba(255,255,255,0.03);
+}
+
+* { font-family: var(--font-stack); box-sizing: border-box; }
+
+body {
+    background-color: var(--bg-color); color: var(--text-main);
+    margin: 0; padding: 0; height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    overflow: hidden;
+    transition: background-color 0.3s;
+}
+
+/* ============================================ 
+   TOP BAR (MODIFIED)
+   ============================================ */
+#top-dock {
+    position: fixed; top: 0; width: var(--width-card); height: 40px;
+    background-color: var(--card-bg); border-radius: 0 0 15px 15px;
+    /* Flexbox to Center Text */
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 10px;
+    z-index: 20; box-shadow: 0 4px 6px var(--dim-shadow);
+}
+#header-info { font-size: 0.9rem; font-weight: bold; text-transform: uppercase; }
+
+#header-info, 
+#float-activity, 
+.task-name {
+    white-space: nowrap;       
+    overflow: hidden;          
+    text-overflow: ellipsis;   
+    max-width: 100%;           
+    display: block;          
+    max-height: 2.8rem;  
+}
+
+/* Clean style for Top Bar Buttons (now in sidebar) */
+.top-bar-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 5px;
+    margin: 0;
+    box-shadow: none !important;
+    transform: none !important;
+    transition: color 0.2s;
+}
+.top-bar-btn:hover {
+    color: var(--text-main);
+    background: transparent;
+}
+.spacer { height: 45px; flex-shrink: 0; }
+.heavy { font-weight: 900; font-style: italic;}
+
+/* ============================================ 
+   FLOATING WIDGET
+   ============================================ */
+#floating-widget {
+    position: fixed; bottom: 20px; right: 20px;
+    width: 130px; background: var(--card-bg);
+    border: 1px solid var(--dim-shadow);
+    border-radius: 10px; padding: 10px;
+    box-shadow: 0 5px 15px var(--dim-shadow);
+    z-index: 100; cursor: pointer; 
+    transition: transform var(--anim-speed) var(--anim-curve);
+}
+#floating-widget:hover { transform: scale(1.02); }
+#floating-widget.hidden { display: none !important; }
+
+/* ============================================ 
+   SIDEBARS
+   ============================================ */
+.trigger-area { position: fixed; top: 0%; bottom: 0%; height: 100%; width: 80px; z-index: 35; }
+.trigger-area.left { left: 0; } .trigger-area.right { right: 0; }
+
+.sidebar { 
+    position: fixed; top: 0; bottom: 0; background: var(--card-bg); 
+    z-index: 40; padding: 20px; box-sizing: border-box; 
+    transition: transform var(--anim-speed) var(--anim-curve) 0.3s; 
+    box-shadow: 0 0 20px var(--dim-shadow); display: flex; flex-direction: column; gap: 15px;
+    height: 100vh;
+    transition: transform var(--anim-speed) var(--anim-curve) 0.2s;
+}
+.trigger-area:hover ~ .sidebar, .sidebar:hover { transition-delay: 0.2s; }
+
+.sidebar.left { left: 0; transform: translateX(-100%); width: 400px; border-right: 1px solid var(--dim-border); }
+.sidebar.right { right: 0; transform: translateX(100%); width: 400px; border-left: 1px solid var(--dim-border); }
+.trigger-area.left:hover ~ .sidebar.left, .sidebar.left:hover { transform: translateX(0); }
+.trigger-area.right:hover ~ .sidebar.right, .sidebar.right:hover { transform: translateX(0); }
+
+.sidebar-header { flex-shrink: 0;}
+.sidebar-header h3 { margin: 0; color: var(--text-main); }
+.sr-controls { display: flex; gap: 5px; }
+
+.sidebar-scroll-content { 
+    flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; padding-right: 5px; 
+    scrollbar-width: none; -ms-overflow-style: none;
+}
+.sidebar-scroll-content::-webkit-scrollbar { width: 0px; display: none; }
+.right-content-padding { padding-bottom: 150px !important; }
+
+.sidebar-footer-menu { margin-top: auto; display: flex; gap: 5px; padding-top: 10px; border-top: 1px solid var(--dim-border); flex-shrink: 0; }
+.nav-btn { flex: 1; background: var(--dim-bg); border: none; padding: 8px; cursor: pointer; font-weight: bold; color: var(--text-muted); border-radius: 5px; font-size: 0.8rem;}
+.nav-btn.active { background: var(--accent-blue); color: white; }
+
+.sidebar textarea { width: 100%; height: 150px; flex-shrink: 0; background: var(--dim-bg); border: 1px solid var(--dim-border); color: var(--text-main); resize: vertical; outline: none; padding: 10px; border-radius: 10px; font-size: 0.9rem; scrollbar-width: none; -ms-overflow-style: none;}
+#schedule-panel.card-side { width: 100%; background: none; box-shadow: none; padding: 0; align-items: flex-start; }
+.atividade-row { width: 100%; border-bottom: 1px solid var(--dim-border); padding: 5px 0; display: block; }
+.inner-content { display: grid; grid-template-columns: 60px 1fr; align-items: center; width: 100%; }
+.inner-content.current { width: fit-content; background: url(//s2.svgbox.net/pen-brushes.svg?ic=brush-8&color=ffff43); background-size: 100% 100%; background-repeat: no-repeat; background-position: center; padding: 5px 10px; margin: -5px -10px; border-radius: 4px; }
+.hora { color: var(--accent-blue); font-weight: bold; font-size: 0.9rem; }
+.desc { color: var(--text-main); }
+.inner-content.current .desc{color: var(--text-current-activity);}
+#methods-list { display: flex; flex-direction: column; gap: 20px; }
+.method-card { background: var(--dim-card); border: 1px solid var(--dim-bg); border-radius: 8px; padding: 15px; color: var(--text-main); font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+.method-header { font-weight: bold; color: var(--accent-blue); margin-bottom: 10px; border-bottom: 1px solid var(--dim-border); padding-bottom: 5px; display: block; margin-top: -5px}
+.method-body { margin-bottom: 15px; display: block; }
+.method-footer { color: var(--text-muted); font-size: 0.8rem; display: block; border-top: 1px dashed var(--dim-border); padding-top: 10px; }
+
+/* ============================================ 
+   MAIN UI COMPONENTS 
+   ============================================ */
+.container { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 0; }
+.view-section { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 15px; overflow: hidden; padding-bottom: 5px; overflow-y: auto;-ms-overflow-style: none;scrollbar-width: none;}
+.view-section.hidden { display: none; }
+.card { width: var(--width-card); background-color: var(--card-bg); border-radius: var(--radius-main); padding: 20px; box-shadow: 0 4px 10px var(--dim-shadow--dim-bg); display: flex; flex-direction: column; align-items: center; position: relative; }
+.full-height-card { height: 100%; overflow: hidden; }
+
+/* Pomodoro Specifics & Layout with Edit Mode */
+#pomodoro-main { 
+    flex-shrink: 0; 
+    height: auto; 
+    overflow: hidden; 
+    transition: all 0.3s; 
+    width: var(--width-card); 
+}
+.edit-pomo-btn { 
+    position: absolute; 
+    top: 10px; 
+    right: 10px; 
+    
+    width: 35px;
+    height: 35px;
+    padding: 0; 
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%; 
+    background: var(--card-bg); 
+    color: var(--text-muted); 
+    font-size: 1.2rem; 
+    cursor: pointer; 
+    z-index: 5; 
+    border: 1px dashed var(--dim-border); 
+}
+.edit-pomo-btn:hover { color: var(--accent-blue); }
+
+.pomo-inner-container { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    width: 100%; 
+    transition: all 0.5s ease; 
+    gap: 0; 
+}
+.timer-wrapper { 
+    position: relative; 
+    width: 210px; 
+    height: 210px; 
+    flex-shrink: 0; 
+    transition: transform 0.5s ease; 
+}
+.pomo-note-wrapper { 
+    width: 0;
+    height: 210px; 
+    overflow: hidden; 
+    opacity: 0; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    transition: flex-grow 0.5s ease, opacity 0.5s ease, padding 0.5s ease; 
+    flex-grow: 0;
+}
+
+/* When edit mode is active (handled by JS adding class .pomo-editing to the parent) */
+.card.pomo-editing .timer-wrapper { transform: NONE; }
+.card.pomo-editing .pomo-note-wrapper { 
+    width: auto; 
+    flex-grow: 1; 
+    opacity: 1; 
+    padding-left: 20px; 
+}
+
+#pomo-side-note {
+    width: 100%; 
+    height: 100%; 
+    background: transparent; 
+    border: 1px dashed var(--dim-border); 
+    border-radius: 10px; 
+    padding: 15px; 
+    color: var(--text-main); 
+    resize: none; 
+    font-size: 0.9rem;
+    outline: none;
+    box-sizing: border-box; 
+}
+
+#status-main {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;          
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+h1#time-main.text-mode {
+    font-size: 1.8rem;
+    max-width: 180px;
+    max-height: 5.6rem;
+    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: normal;        
+    
+    text-align: center;
+    display: block;
+}
+#pomo-side-note:focus { border-color: var(--accent-blue); }
+
+.timer-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); transition: opacity 0.3s; }
+circle, rect { fill: none; stroke-width: 8; }
+.bg-border { stroke: var(--dim-border); }
+.progress-border { stroke: var(--accent-red); stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.5s ease; }
+.timer-svg.hidden-circle { opacity: 0; }
+.timer-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+h1[id^="time"] { font-size: 3.5rem; margin: 0; font-weight: normal; }
+div[id^="status"] { font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; text-align: center;}
+h1#time-main.text-mode { font-size: 1.8rem; line-height: 1.1; word-break: break-word; text-align: center; max-width: 180px; }
+.timer-controls { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+
+/* Buttons General */
+button { padding: 8px 20px; font-size: 1rem; cursor: pointer; border: none; border-radius: var(--radius-small); background: var(--accent-red); color: #f2e5bc; font-weight: bold; transition: transform 0.1s; }
+button:active { transform: scale(0.95); }
+button.hidden { display: none; }
+.btn-reset { padding: 0; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; background: var(--dim-border); color: var(--text-muted); }
+.btn-reset:hover { background: var(--accent-blue); color: white; }
+
+/* Manual & Pin Mode */
+.manual-inputs-bottom { display: flex; gap: 30px; margin-top: 20px; }
+.input-group { display: flex; flex-direction: column; align-items: center; }
+.input-group label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 5px; font-weight: bold; }
+.input-group input { width: 70px; padding: 8px; text-align: center; border-radius: 8px; border: 1px solid var(--dim-border); background: var(--dim-bg); color: var(--text-main); font-weight: bold; font-size: 1rem; }
+.linear-wrapper { display: none; width: 100%; flex-direction: column; gap: 5px; opacity: 0; }
+.linear-info { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem;}
+.linear-track { width: 100%; height: 8px; background: var(--dim-border); border-radius: 4px; overflow: hidden; }
+.linear-fill { height: 100%; width: 100%; background: var(--accent-red); transition: width 1s linear; }
+
+/* Body Modes */
+body.mode-full #pomodoro-main { padding: 10px 20px; border-radius: 10px; }
+body.mode-full #pomodoro-main .timer-wrapper, 
+body.mode-full #pomodoro-main .pomo-note-wrapper, 
+body.mode-full #btn-pomo-edit { display: none; } /* Hide complicated stuff in full mode */
+body.mode-full #pomodoro-main .linear-wrapper { display: flex; opacity: 1; }
+body.mode-full #topics-panel { flex-grow: 100; }
+body.mode-minimized #topics-panel { flex: 0 0 40px; min-height: 40px; overflow: hidden; transition: flex-grow 0.3s ease, min-height 0.3s ease; }
+body.mode-minimized #topics-panel:hover { flex-grow: 100; min-height: 300px;}
+body.mode-minimized #topics-panel .table-container { opacity: 0; transition: opacity 0.2s; pointer-events: none;}
+body.mode-minimized #topics-panel:hover .table-container {opacity: 1; pointer-events: auto;}
+#pin-btn { transition: transform 0.2s; }
+
+/* Topics List */
+#topics-panel { flex: 1; overflow: hidden; min-height: 0; align-items: stretch; padding-bottom: 0; margin-bottom: 0; }
+.card-header-row { width: 100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--dim-bg); padding-bottom: 5px; margin-bottom: 5px; flex-shrink: 0; }
+.card-title { margin: 0;margin-top: -10px; font-size: 0.8rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+#pin-btn { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; padding: 0; margin: 0; margin-top: -10px; margin-right: -10px; color: var(--text-main); }
+.table-container { flex: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 5px; }
+.table-container::-webkit-scrollbar { width: 6px; }
+.table-container::-webkit-scrollbar-thumb { background: var(--dim-shadow); border-radius: 3px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { text-align: left; color: var(--text-muted); padding: 5px; font-weight: normal; position: sticky; top: 0; background: var(--card-bg); z-index: 5; border-bottom: 1px solid var(--dim-border);}
+td { padding: 5px; border-bottom: 1px solid var(--dim-bg); vertical-align: middle; }
+.right { text-align: right; }
+.topic-check {accent-color: var(--accent-green); cursor: pointer; transform: scale(1.2); }
+tr.completed td { color: var(--text-muted); opacity: 0.7; }
+tr.completed .topic-name { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: var(--accent-green); }
+.action-btn { background: transparent; border: 1px solid var(--dim-border); color: var(--text-muted); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; margin-left: 4px; }
+.action-btn:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+
+/* Task Queue */
+.task-input-row { width: 100%; display: flex; gap: 10px; margin-bottom: 20px; align-items: center; background: var(--dim-bg); padding: 10px; border-radius: 10px; flex-shrink: 0; }
+.input-main { flex: 1; padding: 8px; border-radius: 5px; border: 1px solid var(--dim-border); background: var(--bg-color); color: var(--text-main); }
+.time-inputs { display: flex; align-items: center; gap: 2px; }
+.time-inputs input { width: 60px; padding: 8px; text-align: center; border-radius: 5px; border: 1px solid var(--dim-border); background: var(--bg-color); color: var(--text-main); }
+.action-btn-large { background: var(--accent-blue); color: white; border: none; padding: 0 15px; height: 35px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+#task-color { width: 35px; height: 35px; border: none; background: none; cursor: pointer; }
+#view-timer .card { height: 100%; display: flex; flex-direction: column; }
+#timer-queue-list { width: 100%; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; padding-right: 5px; flex-shrink: 0; min-height: 0; scrollbar-width: none;-ms-overflow-style: none;}
+.task-item { background: var(--dim-card); border: 1px solid var(--dim-bg); border-radius: 8px; padding: 10px; display: flex; align-items: center; gap: 15px; position: relative; overflow: hidden; flex-shrink: 0; }
+.task-item.active { border: 1px solid var(--accent-blue); background: rgba(0,0,0,0.06); }
+.task-info { flex: 1; display: flex; justify-content: space-between; align-items: center; z-index: 2; }
+.task-name { font-weight: bold; font-size: 1rem; }
+.task-bar-bg { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: var(--dim-border); }
+.task-bar-fill { height: 100%; width: 100%; transition: width 1s linear; }
+.btn-del-task { background: transparent; border: none; color: var(--accent-red); font-weight: bold; cursor: pointer; font-size: 1.2rem; margin: 0; padding: 0;}
+.task-total-time { font-size: 0.8em; color: var(--text-muted); margin-left: 5px; font-weight: normal; }
+
+/* Widget Content Internals */
+.float-content { display: flex; flex-direction: column; gap: 5px; }
+.float-timer-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--text-muted); }
+.float-bar-bg { width: 100%; height: 4px; background: var(--dim-border); border-radius: 2px; overflow: hidden; }
+#float-bar-fill { height: 100%; width: 0%; background: var(--accent-red); transition: width 1s linear; }
+
+/* Overlays */
+.hidden { display: none !important; }
+#settings-overlay { position: fixed; inset: 0; background: var(--dim-overlay); z-index: 200; display: flex; align-items: center; justify-content: center; }
+.settings-modal { background: var(--card-bg); padding: 20px; border-radius: var(--radius-main); width: 400px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 25px var(--dim-shadow); }
+.settings-modal label { font-size: 0.8rem; font-weight: bold; color: var(--text-muted); }
+.settings-modal input { padding: 8px; border: 1px solid var(--dim-border); border-radius: var(--radius-small); background: var(--dim-bg); color: var(--text-main); }
+.settings-actions { display: flex; gap: 10px; margin-top: 10px; }
+.settings-actions button { flex: 1; margin: 0; }
+footer { padding: 0px 0; flex-shrink: 0; width: 100%; text-align: center; background: transparent; z-index: 10; }
+footer p { font-size: 10px; color: var(--text-muted); opacity: 0.6; margin:0; margin-top: -15px; }
+
+/* ============================================ 
+   CUSTOM CHECKBOX (Topics)
+   ============================================ */
+.topic-check {
+    /* 1. Remove o estilo padrão do Windows/Mac/Android */
+    margin-right:5px;
+}
+
+/* ============================================ 
+   MOBILE TWEAKS (Screens < 768px)
+   ============================================ */
+
+.mob-dock-btn { 
+    display: none;
+} 
+@media (max-width: 768px) {
+
+    :root {
+        /* Standard Mobile Sizes */
+        --mob-h: 40px;          /* Standard height for buttons/inputs/dock */
+        --mob-pad: 13px;        /* Standard padding */
+        --mob-font-lg: 0.9rem;  /* Icons/Headers */
+        --mob-font-md: 0.9rem;  /* Inputs */
+        --mob-z-dock: 500;
+        --mob-z-side: 400;
+    }
+
+    /* --- 1. BOTTOM DOCK --- */
+    #top-dock { 
+        position: fixed;
+        top: auto;          
+        bottom: 0;          
+        width: 100%; 
+        height: var(--mob-h);
+        
+        background-color: var(--card-bg);
+        z-index: var(--mob-z-dock);
+        justify-content: space-between; 
+        
+        border-radius: 15px 15px 0 0;
+        box-shadow: 0 -4px 10px var(--dim-shadow);
+    }
+
+    /* Hamburger Menu Buttons */
+    .mob-dock-btn { 
+        padding: 0 5px 0 5px ;
+        display: flex; 
+        font-size: 30px; 
+        background-color: transparent;
+        color: var(--text-main);
+        height: 100%;
+    } 
+
+    /* --- 2. LAYOUT & SPACING --- */
+    .spacer { display: none; }
+    
+    .container { 
+        overflow-y: auto; 
+        padding-top: var(--mob-pad);    
+        padding-bottom: 42px; /* Extra space so content isn't hidden behind dock */
+    }
+    
+    /* Global Text Visibility Fixes */
+    #header-info, #float-activity, .task-name { display: block; }
+    
+    /* Card Width Adjustment */
+    .card, :root { --width-card: 93%; } 
+
+    /* --- 3. SIDEBAR FULL SCREEN --- */
+    .sidebar { 
+        width: 100% !important; 
+        border: none;
+        box-shadow: none;
+        z-index: var(--mob-z-side); 
+        
+        /* Position: Top to Dock */
+        top: 0;
+        bottom: var(--mob-h); 
+        height: auto; 
+    }
+    
+    .sidebar.left { transform: translateX(-100%); }
+    .sidebar.right { transform: translateX(100%); }
+    .sidebar.open { transform: translateX(0) !important; }
+    
+    .trigger-area { display: none; }
+
+    /* --- 4. TIMER PAGE: GRID LAYOUT --- */
+    .task-input-row {
+        display: grid !important;
+        /* Col 1: Fluid | Col 2: Fixed Button Size */
+        grid-template-columns: 1fr var(--mob-h) !important; 
+        grid-template-rows: auto auto !important;
+        gap: 5px !important;
+        
+        background: transparent !important; 
+        padding: 0 !important; 
+        border: none !important;
+        align-items: stretch !important;
+    }
+
+    /* Row 1: Name (Col 1) */
+    #task-name { 
+        grid-column: 1 / 2; 
+        grid-row: 1 / 2;
+        width: 100% !important; 
+        min-height: var(--mob-h);
+        font-size: var(--mob-font-md);
+    }
+
+    /* Row 1: Color (Col 2) */
+    #task-color { 
+        grid-column: 2 / 3; 
+        grid-row: 1 / 2;
+        width: 100% !important; 
+        height: 100% !important; 
+        min-height: var(--mob-h);
+        padding: 0; border: none;
+        background: none;
+    }
+
+    /* Row 2: Time Inputs (Col 1) */
+    .time-inputs {
+        grid-column: 1 / 2; 
+        grid-row: 2 / 3;
+        display: flex !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        gap: 5px;
+    }
+    .time-inputs input {
+        width: 32% !important; 
+        min-height: var(--mob-h);
+        font-size: var(--mob-font-md);
+        text-align: left;
+        padding: 10px;
+    }
+    .time-inputs span { display: none !important; } 
+
+    /* Row 2: Add Button (Col 2) */
+    #btn-add-task {
+        grid-column: 2 / 3; 
+        grid-row: 2 / 3;
+        width: 100% !important; 
+        height: 100% !important;
+        min-height: var(--mob-h);
+        padding: 0 !important;
+    }
+
+    /* --- 5. TIMER PAGE: TASK LIST --- */
+    .task-item {
+        padding-right: 0 !important;
+        font-size: var(--mob-font-lg); 
+    }
+    
+    .btn-del-task {
+        /* Large touch target */
+        min-width: 30px !important;
+        height: 30px !important;
+        font-size: 1.7rem !important; 
+        
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        
+        background: var(--dim-card); 
+        border-radius: 8px;
+        margin: -5px 5px 0 0 !important;
+    }
+
+    /* --- 6. GENERAL INPUTS & WIDGETS --- */
+    .nav-btn { font-size: 1rem; padding: var(--mob-pad); }
+    .edit-pomo-btn { width: var(--mob-h); height: var(--mob-h); }
+    .input-group input { font-size: var(--mob-font-md); width: 100%; height: var(--mob-h); }
+    
+    #floating-widget { bottom: 80px; right: 15px; } 
+
+    .h-desk { display: none; } 
+    
+    /* Container layout */
+    #header-info { 
+        align-items: center;
+        justify-content: center;
+        line-height: 1.2;
+    }
+
+    /* Activity Name (Top line) */
+    .heavy {
+        font-size: 0.9rem; /* Fits nicely inside 50px dock */
+        font-weight: 900;
+    }
+
+    /* Date (Bottom line) */
+    .h-date {
+        color: var(--text-muted);
+        font-weight: normal;
+        margin-top: -2px; /* Pull closer to activity */
+    }
+}

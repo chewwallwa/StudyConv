@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Dashboard</title>
+    <link rel="stylesheet" href="style.css">    
+</head>
+<body>
+
+    <div class="trigger-area left"></div>
+    <div class="trigger-area right"></div>
+
+    <aside class="sidebar left" id="sb-left">         
+
+        <div class="sidebar-header">
+            <h3>Schedule</h3>
+        </div>
+        <div class="sidebar-scroll-content">
+            <textarea id="notes-area-left" placeholder="Notes..."></textarea>
+            
+            <section id="schedule-panel" class="card-side">
+                <div id="schedule-list">
+                    <p class="loading-text">Syncing...</p>
+                </div>
+            </section>
+        </div>
+
+        <div class="sidebar-footer-menu">
+            <button class="nav-btn active" onclick="viewManager.switch('main')">MAIN</button>
+            <button class="nav-btn" onclick="viewManager.switch('pomodoro')">POMODORO</button>
+            <button class="nav-btn" onclick="viewManager.switch('timer')">TIMER</button>
+        </div>
+    </aside>
+
+    <aside class="sidebar right" id="sb-right">  
+        
+        <div class="sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Methodology</h3>
+            <div class="sr-controls">
+                <button id="btn-settings" class="top-bar-btn" title="Settings">⚙</button>
+                <button id="btn-theme-toggle" class="top-bar-btn" title="Toggle Theme">☀</button>
+            </div>
+        </div>
+        
+        <div class="sidebar-scroll-content right-content-padding">
+            <div id="methods-list">
+                <p class="loading-text" style="color: var(--text-muted);">Waiting for activity...</p>
+            </div>
+
+            <textarea id="notes-area-right" placeholder="Notes..." style="text-align: right;"></textarea>
+             
+        </div>
+    </aside>
+
+    
+    <header id="top-dock">
+        <button class="mob-dock-btn" onclick="toggleSidebar('left')">☰</button>
+        <span id="header-info">Loading...</span>
+        <button class="mob-dock-btn" onclick="toggleSidebar('right')">☰</button>
+    </header>
+
+    <div class="container">
+        <div class="spacer"></div>
+
+        <div id="view-main" class="view-section">
+            <section id="pomodoro-main" class="card">                
+                
+                <button id="btn-pomo-edit" class="edit-pomo-btn" title="Toggle Note">ᝰ</button>
+
+                <div class="pomo-inner-container">
+                    
+                    <div class="timer-wrapper">
+                        <svg class="timer-svg">
+                            <rect x="5" y="5" width="200" height="200" rx="40" ry="40" class="bg-border"></rect>
+                            <rect x="5" y="5" width="200" height="200" rx="40" ry="40" class="progress-border" id="progresso-main"></rect>
+                        </svg>
+                        <div class="timer-content">
+                            <h1 id="time-main">00:00</h1>
+                            <div class="timer-controls">
+                                <button id="btn-main" class="hidden">START</button>
+                                <button id="btn-reset-main" class="btn-reset hidden">↺</button>
+                            </div>
+                            <div id="status-main">FOCUS</div>
+                        </div>
+                    </div>
+
+                    <div class="pomo-note-wrapper">
+                        <textarea id="pomo-side-note" placeholder="Task details..."></textarea>
+                    </div>
+
+                </div>
+
+                <div class="linear-wrapper">
+                    <div class="linear-info">
+                        <span id="mini-time">00:00</span>
+                        <span id="mini-status">FOCUS</span>
+                    </div>
+                    <div class="linear-track">
+                        <div class="linear-fill" id="progresso-linear"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="topics-panel" class="card hidden">
+                <div class="card-header-row">
+                    <h4 class="card-title">STUDY TOPICS</h4>
+                    <button id="pin-btn" title="Toggle View Mode">📌</button>
+                </div>
+                <div class="table-container">
+                    <table id="topics-table">
+                        <thead>
+                            <tr>
+                                <th width="40%">Syllabus</th>
+                                <th width="30%">Source</th>
+                                <th width="30%" class="right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topics-body"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-pomodoro" class="view-section hidden">
+            <section class="card">
+                <h4 class="card-title">MANUAL MODE</h4>
+                <div class="timer-wrapper">
+                    <svg class="timer-svg">
+                        <rect x="5" y="5" width="200" height="200" rx="40" ry="40" class="bg-border"></rect>
+                        <rect x="5" y="5" width="200" height="200" rx="40" ry="40" class="progress-border" id="progresso-manual"></rect>
+                    </svg>
+                    <div class="timer-content">
+                        <h1 id="time-manual">25:00</h1>
+                        <div class="timer-controls">
+                            <button id="btn-manual">START</button>
+                            <button id="btn-reset-manual" class="btn-reset">↺</button>
+                        </div>
+                        <div id="status-manual">READY</div>
+                    </div>
+                </div>
+                <div class="manual-inputs-bottom">
+                    <div class="input-group">
+                        <label>Focus (min)</label>
+                        <input type="number" id="manual-focus-time" value="25">
+                    </div>
+                    <div class="input-group">
+                        <label>Rest (min)</label>
+                        <input type="number" id="manual-rest-time" value="5">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-timer" class="view-section hidden">
+            <section class="card full-height-card">
+                <div class="card-header-row">
+                    <h4 class="card-title">TASK QUEUE</h4>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button id="global-queue-btn" class="action-btn-large" style="background: var(--text-muted);">⏯ PAUSED</button>
+                        <button id="global-reset-btn" class="btn-reset">↺</button>
+                        <button id="global-clear-btn" class="btn-reset" title="Clear All" style="color: var(--accent-red);">🗑</button>
+                    </div>
+                </div>
+                
+                <div class="task-input-row">
+                    <input type="text" id="task-name" placeholder="Task Name" class="input-main">
+                    <div class="time-inputs">
+                        <input type="number" id="task-h" placeholder="hh" min="0"><span>:</span>
+                        <input type="number" id="task-m" placeholder="min" min="0"><span>:</span>
+                        <input type="number" id="task-s" placeholder="ss" min="0">
+                    </div>
+                    <input type="color" id="task-color" value="#458588" title="Color">
+                    <button id="btn-add-task" class="action-btn-large">+</button>
+                </div>
+
+                <div id="timer-queue-list"></div>
+            </section>
+        </div>
+
+        <footer><p>chewwallwa 2026</p></footer>
+    </div>
+
+    <div id="floating-widget" class="hidden" title="Click to go to Main">
+        <div class="float-content">
+            <span id="float-activity" class="heavy">...</span>
+            <div class="float-timer-row">
+                <span id="float-time">00:00</span>
+                <span id="float-status">FOCUS</span>
+            </div>
+            <div class="float-bar-bg">
+                <div id="float-bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+<div id="settings-overlay" class="hidden">
+        <div class="settings-modal" id="settings-modal">
+            <div class="settings-header">
+                <h2>Dashboard Settings</h2>
+                <button class="close-btn" id="btn-close-settings">&times;</button>
+            </div>
+            
+            <div class="settings-body">
+                <h3>📊 Data Sources (CSV)</h3>
+                <label>Main Schedule URL</label>
+                <input type="text" id="cfg-sheet-url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv">
+                
+                <label>Topics/Syllabus URL</label>
+                <input type="text" id="cfg-topics-url">
+                
+                <label>Methods Sheet URL</label>
+                <input type="text" id="cfg-methods-url">
+
+                <div class="separator" style="margin: 15px 0; border-top: 1px solid #444;"></div>
+
+                <h3>🤖 Telegram Bot Setup</h3>
+                <p style="font-size: 0.8em; color: #888;">Configure your bot to receive notifications.</p>
+                
+                <label>Bot Token (@BotFather)</label>
+                <input type="text" id="cfg-tg-token" placeholder="12345:AAF...">
+
+                <label>Chat ID (@userinfobot)</label>
+                <input type="text" id="cfg-tg-id" placeholder="123456789">
+
+                <div class="separator" style="margin: 15px 0; border-top: 1px solid #444;"></div>
+
+                <h3>☁️ Personal Drive Sync</h3>
+                <p style="font-size: 0.8em; color: #888;">Saves everything to your Google Drive (Auto-save active).</p>
+                
+                <label>API URL (Google Script /exec)</label>
+                <input type="text" id="cfg-cloud-url" placeholder="https://script.google.com/.../exec">
+
+                <label>Secret Key (Password)</label>
+                <input type="password" id="cfg-cloud-key" placeholder="Your secret password">
+
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button id="btn-cloud-save" class="action-btn" style="background: #2e7d32; color: white;">⬆️ Force Upload</button>
+                    <button id="btn-cloud-load" class="action-btn" style="background: #1565c0; color: white;">⬇️ Force Download</button>
+                </div>
+                <div id="cloud-status" style="margin-top: 5px; font-size: 0.8em; color: #aaa; font-style: italic;"></div>
+
+                <div class="separator" style="margin: 15px 0; border-top: 1px solid #444;"></div>
+
+                <h3>📦 Manual Backup (File)</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-export" class="action-btn">📤 Export Code</button>
+                    <button id="btn-import" class="action-btn">📥 Import Code</button>
+                </div>
+            </div>
+
+            <div class="settings-actions">
+                <button id="btn-save-settings" class="save-btn">Save & Reload</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
