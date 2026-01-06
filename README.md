@@ -1,78 +1,60 @@
-# StudyConv
+## How to load the cronogram
 
-A comfy and clean dashboard designed to synchronize your life with your study schedule.
-Maybe it is not the easiest or fastest thing to use ar fisrt, but it is the last time you will will be lost in your life.
+Faça sua planilha no meu modelo, rode o script (instruções abaixo), para transformar a planilha visual em linear data pro site. Publique o link e cole no script.js.
 
-## ✨ Features
+tag "estudo": 50 min focus, 5 min racuperacao ativa, 5 min rest
+intervalo entre atividades "estudo" com nome diferente: 40 min focus, 5 min racuperacao ativa, 15 min rest
+outras: mostra timer pra proxima atividade "estudo" e pomodoro manual
 
-### 📅 Dynamic Schedule: Automatically syncs with a Google Sheet to show your current activity, block, and subject based on the time of day.
+faça o mesmo pra aba "material" da planilha (links diferentes pra cada aba)
 
-### 🍅 Smart Pomodoro:
+## How to turn a cronogram in raw data for the site
 
-  - Auto Mode: Automatically detects "Study" blocks and enables the timer logic based on your schedule.
-  - Manual Mode: Standard Pomodoro timer for ad-hoc sessions.
+<details><summary>see</summary>
 
-### ✅ Timer Queue: A built-in timer queue to manage a list os timers with sequential individual countdowns, colors and name.
+## 📅 Gerador de Cronograma Escolar/Acadêmico (Google Sheets)
 
-### 📝 Integrated Notes:
+Este script automatiza a criação de uma agenda linear (database) a partir de um cronograma visual semanal no Google Sheets. Ideal para estudantes e concurseiros que planejam estudos por blocos e precisam contabilizar horas líquidas.
 
-  - Pomodoro Notes: A hidden text area attached to the timer card.
-  - Notes on sidebars
-  - All notes are auto-saved to your browser's Local Storage.
+### 🚀 O que ele faz
+Transforma uma tabela visual (Blocos de Horários) em uma lista de dados contendo:
+- Nome do Curso/Matéria
+- Data exata (dd/mm/aaaa)
+- Dia da Semana
+- Hora
+- Atividade
 
-### 📚 Study Topics: Fetches your syllabus/topics from the spreadsheet, allowing you to mark them as done. Includes a "Pin Mode" to keep focus on the list.
+Ele resolve automaticamente conflitos de datas, corrige fusos horários e processa múltiplos blocos de uma vez.
 
-### 🎨 Settings:
+## ⚠️ Avisos Importantes (Leia antes de usar)
 
-  - Dark/Light Mode toggle.
-  - Settings panel to easily swap out Spreadsheet data sources.
+### 1. Verifique o Código
+Como boa prática de segurança, **nunca execute scripts desconhecidos** na sua conta Google sem antes ler o código. O código é aberto (`.gs` ou `.js`) e você pode conferir que ele apenas lê os dados da aba `main` e escreve na aba `DB_Final`. Ele não acessa seu e-mail, drive ou contatos.
 
-### Mobile and little screens support
+### 2. Permissão de Execução (Google)
+Na primeira vez que rodar, o Google mostrará um aviso de "Aplicativo não verificado" (porque este script não foi publicado na loja oficial). Para autorizar:
+1. Clique em **Revisar Permissões**.
+2. Selecione sua conta.
+3. Na tela de "O Google não verificou este app", clique em **Avançado**.
+4. Clique no link no rodapé: **Acessar [Nome do Projeto] (não seguro)**.
+5. Clique em **Permitir**.
+*Isso é padrão para qualquer script pessoal no Google Sheets.*
 
-## Preview
+---
 
-### Github pages on the repo has the example sheet working
+## 🛠️ Como Usar
 
-### features preview
+1. Abra sua planilha no Google Sheets.
+2. Vá em **Extensões** > **Apps Script**.
+3. Apague qualquer código existente e cole o conteúdo do arquivo `script.js` deste repositório.
+4. Salve o projeto.
+5. Volte para a planilha e atualize a página (F5).
+6. Um novo menu **"📅 Cronograma"** aparecerá no topo. Clique em **Atualizar Agenda**.
 
-https://github.com/user-attachments/assets/cbab623c-7c01-482c-b71f-f0839149f219
+## 📋 Requisitos da Planilha
 
-### resizing/mobile preview
+A aba principal deve se chamar `main` e seguir o layout:
+* **Colunas A-H:** Grade de horários (A=Hora, B=Dom... H=Sab).
+* **Colunas I-L:** Metadados dos blocos (Curso, Bloco, Data Início, Data Fim).
 
-https://github.com/user-attachments/assets/d4bbe2e9-ea5f-4c7e-a490-ce87e11c4f04
-
-## 🚀 How to Use
-1. Acess the github pages link and put your google sheet links :)
-
-2. Spreadsheet Setup
-
-This dashboard relies on Google Sheets to feed data (Schedule, Topics, Methodology).
-
-  - Create your Google Sheet from my template (there are some notes on how to use).
-
-[**Link for the template**](https://docs.google.com/spreadsheets/d/13o1PEcNd045ZOiusKWNUUGKH8LrgA80qO-Hi97hk22s/edit?usp=sharing ) (For privacy you can manually copy the template and the script to self-host run it(google: "lol") )
-
-  - Important: Go to File > Share > Publish to web.
-  - Select the specific tab (e.g., "Schedule") and choose Comma-separated values (.csv) as the format.
-  - Copy the generated link. 
-
-3. Configuration
-
-    - Open the Dashboard.
-    - Click the Settings (⚙️) icon in the right sidebar.
-    - Paste your CSV links into the corresponding fields.
-    - Click Save & Reload.
-
-## 🔮 Future
-
-  - Standalone Lite Version: I am currently working on a web-based version that removes the schedule dependency. It will focus solely on the Pomodoro timer, Task Queue, and Notes system for users who don't need the Google Sheets integration. Gonna take some time :)
-  - Smartwatch and touch support
-  - Online Storage for syncing between devices ? (I don't want to have a login section or like this. I really want this to be private)
-  - Turn into app ? (on the next life)
-
-### 🛠️ Tech Stack
-
-  - Frontend: HTML5, CSS3 (Variables & Flexbox), Vanilla JavaScript (ES6+).
-  - Data Source: Google Sheets (CSV).
-  - Storage: LocalStorage (for notes, settings, and theme preference).
-  - **Note**: Don't judge me, at least it is good :) Most of the JS was created with AI :)
+</details>

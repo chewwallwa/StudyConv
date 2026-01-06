@@ -1,0 +1,219 @@
+/**
+ * @name generateFullSchedule
+ */
+function generateFullSchedule() {
+  const generator = new ScheduleGenerator();
+  generator.run();
+}
+
+/**
+ * Cria o menu automaticamente ao abrir a planilha.
+ */
+function onOpen() {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('📅 Cronograma')
+      .addItem('🔄 Atualizar Agenda', 'generateFullSchedule')
+      .addToUi();
+}
+
+// ============================================ %
+//                                              PART: CLASS DEFINITION
+// ============================================ %
+
+class ScheduleGenerator {
+
+  constructor() {
+    this.ss = SpreadsheetApp.getActiveSpreadsheet();
+    this.sheetMain = this.ss.getSheetByName("main");
+    if (!this.sheetMain) throw new Error("Aba 'main' não encontrada!");
+    
+    // Cria aba de destino
+    this.sheetTarget = this.ss.getSheetByName("DB_Final");
+    if (!this.sheetTarget) {
+      this.sheetTarget = this.ss.insertSheet("DB_Final");
+    } else {
+      this.sheetTarget.clear();
+    }
+  }
+
+  // function self = run(self)
+  run() {
+    // section _______________________________________________________
+    // 1. MAPEAMENTO DE BLOCOS (Leitura Leve)
+    
+    const lastRow = this.sheetMain.getLastRow();
+    console.log(`[INIT] Mapeando blocos em ${lastRow} linhas (lendo apenas I:L)...`);
+    
+    // Lê APENAS as colunas de definição (I, J, K, L)
+    // Isso é muito leve para a memória.
+    const metaData = this.sheetMain.getRange(1, 9, lastRow, 4).getDisplayValues();
+    
+    let blocksFound = [];
+
+    // Identifica onde começa cada bloco (número da linha)
+    for (let i = 0; i < metaData.length; i++) {
+      const row = metaData[i];
+      const rawStart = row[2]; // Coluna K (indice 2 no array I:L)
+      
+      // Validação: Tem que ter barra "/" e a coluna anterior ter texto (Nome do Bloco)
+      if (rawStart && String(rawStart).includes("/") && row[1] !== "") {
+        blocksFound.push({
+          rowIndex: i, // Linha onde o bloco está (base 0)
+          curso: row[0],
+          bloco: row[1],
+          inicio: rawStart,
+          fim: row[3]
+        });
+      }
+    }
+
+    console.log(`[MAP] ${blocksFound.length} blocos identificados. Iniciando extração ...`);
+    
+    // Cabeçalho
+    let finalData = [["Nome", "Bloco", "Data", "Dia_Semana", "Hora", "Atividade"]];
+    
+    // section _______________________________________________________
+
+    // Mapa para evitar duplicatas (Chave: Data_Hora)
+    let scheduleMap = new Map();
+
+    for (let b = 0; b < blocksFound.length; b++) {
+      const meta = blocksFound[b];
+      
+      // -- Parse Datas --
+      const startDate = this.parseDateNoon(meta.inicio);
+      const endDate = this.parseDateNoon(meta.fim);
+      
+      if (!startDate || !endDate) continue;
+      
+      // Correção Ano Novo
+      if (endDate < startDate) endDate.setFullYear(endDate.getFullYear() + 1);
+
+      console.log(`> Processando [${b+1}/${blocksFound.length}]: ${meta.bloco} (Linha planilha: ${meta.rowIndex + 1})`);
+
+      // -- LEITURA DA GRADE ESPECÍFICA --
+      // Vai na planilha e busca apenas a área deste bloco.
+      // Começa na linha do bloco e lê até 30 linhas para baixo (suficiente para as horas)
+      // Colunas A até H (1 a 8)
+      // sheetIndex é meta.rowIndex + 1
+      const startRow = meta.rowIndex + 1;
+      const safeHeight = Math.min(30, lastRow - startRow + 1); // Lê 30 linhas ou até o fim
+      
+      if (safeHeight < 1) continue;
+
+      // GETRANGE: Lê apenas o quadradinho necessário
+      const localGrid = this.sheetMain.getRange(startRow, 1, safeHeight, 8).getDisplayValues();
+
+      // -- Processa a grade capturada --
+      this.processGridIntoMap(scheduleMap, meta.curso, meta.bloco, startDate, endDate, localGrid);
+      
+      // LIMPEZA DE MEMÓRIA MANUAL (Opcional, ajuda o Garbage Collector)
+      // Força o script a respirar a cada 20 blocos
+      if (b % 20 === 0) SpreadsheetApp.flush();
+    }
+
+    // section _______________________________________________________
+    // 3. CONSOLIDAÇÃO E ESCRITA
+
+    const outputMatrix = Array.from(scheduleMap.values());
+    
+    if (outputMatrix.length === 0) {
+      console.warn("Nenhum dado gerado.");
+      return;
+    }
+
+    console.log(`[SORT] Ordenando ${outputMatrix.length} registros...`);
+    outputMatrix.sort((a, b) => a[2].getTime() - b[2].getTime());
+
+    // Une cabeçalho com dados
+    const fullSet = [finalData[0], ...outputMatrix];
+
+    this.writeToSheetBatched(fullSet);
+  }
+
+  // subsection------------------------------------------------------
+  // Helper Methods
+  // ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨ ¨
+
+  processGridIntoMap(map, curso, bloco, inicio, fim, grid) {
+    // Loop Datas
+    for (let d = new Date(inicio.getTime()); d <= fim; d.setDate(d.getDate() + 1)) {
+      const currDate = new Date(d);
+      const dayIndex = currDate.getDay(); // 0=Dom ... 6=Sab
+      const colIndex = dayIndex + 1;      // Col B=1 ... H=7
+
+      // Loop Grade (Linhas)
+      for (let i = 0; i < grid.length; i++) {
+        const row = grid[i];
+        const hora = row[0]; // Col A
+
+        // Critério de parada da grade: Hora vazia ou encontrou nova data na Col K (index 10 - não temos col K aqui, só A:H)
+        // Se hora vazia, acabou a grade deste bloco
+        if (!hora || hora === "") continue; 
+        
+        // Se por acaso lemos o cabeçalho "hora" repetido (do proximo bloco), ignora
+        if (String(hora).toLowerCase() === "hora") continue;
+
+        const atividade = row[colIndex];
+
+        if (atividade && atividade.trim() !== "") {
+          const strDate = this.formatBr(currDate);
+          const strHour = String(hora).trim();
+          const uniqueKey = `${strDate}_${strHour}`;
+
+          // Sobrescreve se existir (último bloco vence)
+          map.set(uniqueKey, [
+            curso,
+            bloco,
+            new Date(currDate),
+            this.getDayName(dayIndex),
+            strHour,
+            atividade
+          ]);
+        }
+      }
+    }
+  }
+
+  parseDateNoon(dateString) {
+    if (!dateString) return null;
+    const parts = String(dateString).trim().split('/');
+    if (parts.length === 3) {
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      let year = parseInt(parts[2], 10);
+      if (year < 100) year += 2000;
+      // Meio-dia fixo
+      return new Date(year, month, day, 12, 0, 0);
+    }
+    return null;
+  }
+
+  formatBr(date) {
+    return Utilities.formatDate(date, "GMT-0300", "dd/MM/yyyy");
+  }
+  
+  getDayName(i) {
+    return ["dom", "seg", "ter", "qua", "qui", "sex", "sab"][i];
+  }
+
+  writeToSheetBatched(matrix) {
+    console.log(`[WRITE] Escrevendo ${matrix.length} linhas...`);
+    const BATCH = 5000;
+    
+    for (let i = 0; i < matrix.length; i += BATCH) {
+      const chunk = matrix.slice(i, i + BATCH);
+      this.sheetTarget.getRange(i + 1, 1, chunk.length, chunk[0].length).setValues(chunk);
+      SpreadsheetApp.flush();
+    }
+    
+    // Formatação final rápida
+    if (matrix.length > 1) {
+      this.sheetTarget.getRange("C2:C").setNumberFormat("dd/mm/yyyy");
+      this.sheetTarget.getRange("E2:E").setNumberFormat("@");
+      this.sheetTarget.getRange("A1:F1").setFontWeight("bold");
+    }
+    console.log("[DONE] Sucesso.");
+  }
+
+} // end class

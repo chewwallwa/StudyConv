@@ -88,36 +88,266 @@ function playNotificationSound() {
 }
 
 /**
- * ============================================
- * MANAGERS
- * ============================================
+ * Manages the Settings Modal, LocalStorage persistence,
+ * and Cloud Synchronization (Google Drive).
  */
 class SettingsManager {
     constructor() {
+        // Modal Elements
         this.overlay = document.getElementById('settings-overlay');
         this.btnOpen = document.getElementById('btn-settings');
-        this.btnSave = document.getElementById('btn-save-settings');
         this.btnClose = document.getElementById('btn-close-settings');
+        this.btnSave = document.getElementById('btn-save-settings');
+        
+        // Sheets Inputs
         this.inpSheet = document.getElementById('cfg-sheet-url');
         this.inpTopics = document.getElementById('cfg-topics-url');
         this.inpMethods = document.getElementById('cfg-methods-url');
+        
+        // Telegram Inputs
+        this.inpTgToken = document.getElementById('cfg-tg-token');
+        this.inpTgId = document.getElementById('cfg-tg-id');
+        
+        // Cloud Inputs
+        this.inpCloudUrl = document.getElementById('cfg-cloud-url');
+        this.inpCloudKey = document.getElementById('cfg-cloud-key');
+        this.btnCloudSave = document.getElementById('btn-cloud-save');
+        this.btnCloudLoad = document.getElementById('btn-cloud-load');
+        this.statusCloud = document.getElementById('cloud-status');
+
+        // Manual Backup Inputs
+        this.btnExport = document.getElementById('btn-export');
+        this.btnImport = document.getElementById('btn-import');
+
         this.initEvents();
+        
+        // Auto-Save every 5 min
+        setInterval(() => this.autoCloudSave(), 5 * 60 * 1000);
     }
+
     initEvents() {
-        if(this.btnOpen) this.btnOpen.addEventListener('click', () => {
-            this.inpSheet.value = CONFIG.sheetUrl;
-            this.inpTopics.value = CONFIG.topicsSheetUrl;
-            this.inpMethods.value = CONFIG.methodsSheetUrl;
+        // OPEN SETTINGS
+        this.btnOpen.addEventListener('click', () => {
+            // Load local data into Inputs
+            this.inpSheet.value = localStorage.getItem('cfgSheetUrl') || CONFIG.sheetUrl || '';
+            this.inpTopics.value = localStorage.getItem('cfgTopicsUrl') || CONFIG.topicsSheetUrl || '';
+            this.inpMethods.value = localStorage.getItem('cfgMethodsUrl') || CONFIG.methodsSheetUrl || '';
+            
+            this.inpTgToken.value = localStorage.getItem('cfgTgToken') || '';
+            this.inpTgId.value = localStorage.getItem('cfgTgId') || '';
+            
+            this.inpCloudUrl.value = localStorage.getItem('cfgCloudUrl') || '';
+            this.inpCloudKey.value = localStorage.getItem('cfgCloudKey') || '';
+
             this.overlay.classList.remove('hidden');
         });
-        if(this.btnClose) this.btnClose.addEventListener('click', () => this.overlay.classList.add('hidden'));
-        if(this.btnSave) this.btnSave.addEventListener('click', () => {
-            CONFIG.sheetUrl = this.inpSheet.value;
-            CONFIG.topicsSheetUrl = this.inpTopics.value;
-            CONFIG.methodsSheetUrl = this.inpMethods.value;
-            localStorage.setItem('appConfig', JSON.stringify(CONFIG));
-            location.reload();
+
+        this.btnClose.addEventListener('click', () => this.overlay.classList.add('hidden'));
+
+        // SAVE (Main Button)
+        this.btnSave.addEventListener('click', async () => {
+            // Save Configs from Inputs to LocalStorage
+            localStorage.setItem('cfgSheetUrl', this.inpSheet.value);
+            localStorage.setItem('cfgTopicsUrl', this.inpTopics.value);
+            localStorage.setItem('cfgMethodsUrl', this.inpMethods.value);
+            
+            // Update global CONFIG variable if it exists
+            if (typeof CONFIG !== 'undefined') {
+                CONFIG.sheetUrl = this.inpSheet.value;
+                CONFIG.topicsSheetUrl = this.inpTopics.value;
+                CONFIG.methodsSheetUrl = this.inpMethods.value;
+                localStorage.setItem('appConfig', JSON.stringify(CONFIG));
+            }
+
+            localStorage.setItem('cfgTgToken', this.inpTgToken.value);
+            localStorage.setItem('cfgTgId', this.inpTgId.value);
+            
+            const cloudUrl = this.inpCloudUrl.value;
+            const cloudKey = this.inpCloudKey.value;
+            localStorage.setItem('cfgCloudUrl', cloudUrl);
+            localStorage.setItem('cfgCloudKey', cloudKey);
+
+            // Check Cloud Download
+            if (cloudUrl && cloudKey) {
+                if (confirm("Settings saved! Do you want to download cloud data now to sync?")) {
+                    await this.performCloudDownload(cloudUrl, cloudKey);
+                } else {
+                    await this.performCloudUpload(cloudUrl, cloudKey, true); 
+                    location.reload();
+                }
+            } else {
+                location.reload();
+            }
         });
+
+        // CLOUD BUTTONS
+        this.btnCloudSave.addEventListener('click', () => {
+            this.performCloudUpload(this.inpCloudUrl.value, this.inpCloudKey.value, false);
+        });
+
+        this.btnCloudLoad.addEventListener('click', () => {
+            if(confirm("WARNING: This will replace EVERYTHING on this device with cloud data. Continue?")) {
+                this.performCloudDownload(this.inpCloudUrl.value, this.inpCloudKey.value);
+            }
+        });
+
+        // MANUAL BACKUP BUTTONS
+        this.btnExport.addEventListener('click', () => {
+            const data = this.gatherData();
+            const encoded = btoa(JSON.stringify(data));
+            navigator.clipboard.writeText(encoded).then(() => alert("Backup code copied!"));
+        });
+
+        this.btnImport.addEventListener('click', () => {
+            const code = prompt("Paste the code here:");
+            if(code) this.restoreData(code, true);
+        });
+    }
+
+    // ============================================================
+    // MIRROR STRATEGY (SAVES EVERYTHING)
+    // ============================================================
+
+    gatherData() {
+        // Get ALL current LocalStorage
+        const allData = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            allData[key] = localStorage.getItem(key);
+        }
+
+        return {
+            mirror: allData, // Save exact mirror
+            timestamp: new Date().getTime()
+        };
+    }
+
+    restoreData(inputData, isEncoded = false) {
+        try {
+            let data = inputData;
+            
+            if (!data) throw new Error("Input data is empty.");
+
+            if (isEncoded) {
+                try { data = JSON.parse(atob(inputData.trim())); } 
+                catch (err) { throw new Error("Base64 Decode Failed."); }
+            }
+
+            if (typeof data === 'string') {
+                try { data = JSON.parse(data); } catch(e) {}
+            }
+
+            if (typeof data !== 'object') throw new Error("Invalid Data Format");
+
+            // --- UNIVERSAL RESTORE ---
+            // If 'mirror' key exists, restore everything inside
+            if (data.mirror) {
+                console.log("[Restore] Restoring full mirror...");
+                const store = data.mirror;
+                for (const key in store) {
+                    // Avoid restoring the script url key itself if empty in backup
+                    if (store.hasOwnProperty(key)) {
+                        localStorage.setItem(key, store[key]);
+                    }
+                }
+            } else {
+                // Fallback for old backups (Legacy)
+                console.log("[Restore] Legacy Mode...");
+                if (data.config) localStorage.setItem('appConfig', JSON.stringify(data.config));
+                if (data.notes) localStorage.setItem('notesContent', data.notes);
+                if (data.todoQueue) localStorage.setItem('todoQueue', typeof data.todoQueue === 'object' ? JSON.stringify(data.todoQueue) : data.todoQueue);
+                // ... add other manuals if old backups exist
+            }
+
+            console.log("[Restore] Success!");
+            return true;
+
+        } catch (e) {
+            console.error(e);
+            alert("Restore Error: " + e.message);
+            return false;
+        }
+    }
+
+    // ============================================================
+    // CLOUD LOGIC (Kept same)
+    // ============================================================
+
+    async autoCloudSave() {
+        const url = localStorage.getItem('cfgCloudUrl');
+        const key = localStorage.getItem('cfgCloudKey');
+        if (url && key) {
+            console.log("[AutoSave] Saving...");
+            await this.performCloudUpload(url, key, true);
+        }
+    }
+
+    async performCloudUpload(url, key, silent = false) {
+        if (!url || !key) {
+            if(!silent) alert("Configure URL and Password!");
+            return;
+        }
+
+        if(!silent) this.btnCloudSave.innerText = "⏳ Uploading...";
+        this.statusCloud.innerText = "Syncing...";
+
+        try {
+            // Ensure focus leaves text fields to save pending states
+            if (document.activeElement) document.activeElement.blur();
+
+            const fullData = this.gatherData();
+            
+            // Debug: Show size of what is being saved
+            console.log(`[Upload] Sending ${Object.keys(fullData.mirror).length} keys.`);
+
+            const response = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify({ key: key, payload: fullData })
+            });
+            
+            const json = await response.json();
+            
+            if (json.status === 'success') {
+                this.statusCloud.innerText = "Synced: " + new Date().toLocaleTimeString();
+                if(!silent) alert("✅ Saved to Drive Successfully!");
+            } else {
+                this.statusCloud.innerText = "Save Error";
+                if(!silent) alert("Error: " + json.message);
+            }
+        } catch (e) {
+            console.error(e);
+            this.statusCloud.innerText = "Connection Error";
+            if(!silent) alert("Connection Error. Check URL.");
+        } finally {
+            if(!silent) this.btnCloudSave.innerText = "⬆️ Force Upload";
+        }
+    }
+
+    async performCloudDownload(url, key) {
+        if (!url || !key) return alert("Configure URL and Password!");
+
+        this.btnCloudLoad.innerText = "⏳ Downloading...";
+        
+        try {
+            const response = await fetch(`${url}?key=${encodeURIComponent(key)}`);
+            const json = await response.json();
+
+            if (json.status === 'success') {
+                if (this.restoreData(json.payload, false)) {
+                    alert("🔄 Synced! Page will reload.");
+                    location.reload();
+                }
+            } else if (json.status === 'empty') {
+                alert("⚠️ No backup found in Drive.");
+            } else {
+                alert("Error: " + json.message);
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Connection Error.");
+        } finally {
+            this.btnCloudLoad.innerText = "⬇️ Force Download";
+        }
     }
 }
 
@@ -742,5 +972,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const meth = new MethodsManager();
     const sch = new Schedule();
     const pom = new PomodoroController(sch, window.topicsManager, meth);
-
 });
