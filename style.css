@@ -1,6 +1,6 @@
-/* ============================================ 
-   DESIGN SYSTEM (VARIABLES) 
-   ============================================ */
+/* ============================================
+ *   DESIGN SYSTEM (VARIABLES)
+ *   ============================================ */
 :root {
     /* Colors (Gruvbox Light Default) */
     --bg-color: #F2E5BC;
@@ -12,7 +12,7 @@
     --accent-green: #98971a;
     --accent-yellow: #d79921;
     --accent-blue: #458588;
-    
+
     /* Standardized Transparencies */
     --dim-border: rgba(0,0,0,0.1);
     --dim-bg: rgba(0,0,0,0.05);
@@ -24,10 +24,10 @@
     --radius-main: 20px;
     --radius-small: 5px;
     --width-card: 70%;
-    
+
     /* Fonts */
     --font-stack: 'Iosevka', 'Consolas', monospace;
-    
+
     /* Animation */
     --anim-speed: 0.4s;
     --anim-curve: cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -42,7 +42,7 @@
     --accent-green: #b8bb26;
     --accent-yellow: #fabd2f;
     --text-current-activity: #3c3836;
-    
+
     --dim-border: rgba(255,255,255,0.1);
     --dim-bg: rgba(255,255,255,0.05);
     --dim-card: rgba(255,255,255,0.03);
@@ -58,28 +58,28 @@ body {
     transition: background-color 0.3s;
 }
 
-/* ============================================ 
-   TOP BAR (MODIFIED)
-   ============================================ */
+/* ============================================
+ *   TOP BAR (MODIFIED)
+ *   ============================================ */
 #top-dock {
-    position: fixed; top: 0; width: var(--width-card); height: 40px;
-    background-color: var(--card-bg); border-radius: 0 0 15px 15px;
-    /* Flexbox to Center Text */
-    display: flex; align-items: center; justify-content: center;
-    padding: 0 10px;
-    z-index: 20; box-shadow: 0 4px 6px var(--dim-shadow);
+position: fixed; top: 0; width: var(--width-card); height: 40px;
+background-color: var(--card-bg); border-radius: 0 0 15px 15px;
+/* Flexbox to Center Text */
+display: flex; align-items: center; justify-content: center;
+padding: 0 10px;
+z-index: 20; box-shadow: 0 4px 6px var(--dim-shadow);
 }
 #header-info { font-size: 0.9rem; font-weight: bold; text-transform: uppercase; }
 
-#header-info, 
-#float-activity, 
+#header-info,
+#float-activity,
 .task-name {
-    white-space: nowrap;       
-    overflow: hidden;          
-    text-overflow: ellipsis;   
-    max-width: 100%;           
-    display: block;          
-    max-height: 2.8rem;  
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
+    max-height: 2.8rem;
 }
 
 /* Clean style for Top Bar Buttons (now in sidebar) */
@@ -102,31 +102,31 @@ body {
 .spacer { height: 45px; flex-shrink: 0; }
 .heavy { font-weight: 900; font-style: italic;}
 
-/* ============================================ 
-   FLOATING WIDGET
-   ============================================ */
+/* ============================================
+ *   FLOATING WIDGET
+ *   ============================================ */
 #floating-widget {
-    position: fixed; bottom: 20px; right: 20px;
-    width: 130px; background: var(--card-bg);
-    border: 1px solid var(--dim-shadow);
-    border-radius: 10px; padding: 10px;
-    box-shadow: 0 5px 15px var(--dim-shadow);
-    z-index: 100; cursor: pointer; 
-    transition: transform var(--anim-speed) var(--anim-curve);
+position: fixed; bottom: 20px; right: 20px;
+width: 130px; background: var(--card-bg);
+border: 1px solid var(--dim-shadow);
+border-radius: 10px; padding: 10px;
+box-shadow: 0 5px 15px var(--dim-shadow);
+z-index: 100; cursor: pointer;
+transition: transform var(--anim-speed) var(--anim-curve);
 }
 #floating-widget:hover { transform: scale(1.02); }
 #floating-widget.hidden { display: none !important; }
 
-/* ============================================ 
-   SIDEBARS
-   ============================================ */
+/* ============================================
+ *   SIDEBARS
+ *   ============================================ */
 .trigger-area { position: fixed; top: 0%; bottom: 0%; height: 100%; width: 80px; z-index: 35; }
 .trigger-area.left { left: 0; } .trigger-area.right { right: 0; }
 
-.sidebar { 
-    position: fixed; top: 0; bottom: 0; background: var(--card-bg); 
-    z-index: 40; padding: 20px; box-sizing: border-box; 
-    transition: transform var(--anim-speed) var(--anim-curve) 0.3s; 
+.sidebar {
+    position: fixed; top: 0; bottom: 0; background: var(--card-bg);
+    z-index: 40; padding: 20px; box-sizing: border-box;
+    transition: transform var(--anim-speed) var(--anim-curve) 0.3s;
     box-shadow: 0 0 20px var(--dim-shadow); display: flex; flex-direction: column; gap: 15px;
     height: 100vh;
     transition: transform var(--anim-speed) var(--anim-curve) 0.2s;
@@ -142,8 +142,8 @@ body {
 .sidebar-header h3 { margin: 0; color: var(--text-main); }
 .sr-controls { display: flex; gap: 5px; }
 
-.sidebar-scroll-content { 
-    flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; padding-right: 5px; 
+.sidebar-scroll-content {
+    flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; padding-right: 5px;
     scrollbar-width: none; -ms-overflow-style: none;
 }
 .sidebar-scroll-content::-webkit-scrollbar { width: 0px; display: none; }
@@ -167,9 +167,9 @@ body {
 .method-body { margin-bottom: 15px; display: block; }
 .method-footer { color: var(--text-muted); font-size: 0.8rem; display: block; border-top: 1px dashed var(--dim-border); padding-top: 10px; }
 
-/* ============================================ 
-   MAIN UI COMPONENTS 
-   ============================================ */
+/* ============================================
+ *   MAIN UI COMPONENTS
+ *   ============================================ */
 .container { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 0; }
 .view-section { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 15px; overflow: hidden; padding-bottom: 5px; overflow-y: auto;-ms-overflow-style: none;scrollbar-width: none;}
 .view-section.hidden { display: none; }
@@ -177,105 +177,105 @@ body {
 .full-height-card { height: 100%; overflow: hidden; }
 
 /* Pomodoro Specifics & Layout with Edit Mode */
-#pomodoro-main { 
-    flex-shrink: 0; 
-    height: auto; 
-    overflow: hidden; 
-    transition: all 0.3s; 
-    width: var(--width-card); 
+#pomodoro-main {
+flex-shrink: 0;
+height: auto;
+overflow: hidden;
+transition: all 0.3s;
+width: var(--width-card);
 }
-.edit-pomo-btn { 
-    position: absolute; 
-    top: 10px; 
-    right: 10px; 
-    
+.edit-pomo-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
     width: 35px;
     height: 35px;
-    padding: 0; 
-    
+    padding: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
 
-    border-radius: 50%; 
-    background: var(--card-bg); 
-    color: var(--text-muted); 
-    font-size: 1.2rem; 
-    cursor: pointer; 
-    z-index: 5; 
-    border: 1px dashed var(--dim-border); 
+    border-radius: 50%;
+    background: var(--card-bg);
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 5;
+    border: 1px dashed var(--dim-border);
 }
 .edit-pomo-btn:hover { color: var(--accent-blue); }
 
-.pomo-inner-container { 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    width: 100%; 
-    transition: all 0.5s ease; 
-    gap: 0; 
+.pomo-inner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    transition: all 0.5s ease;
+    gap: 0;
 }
-.timer-wrapper { 
-    position: relative; 
-    width: 210px; 
-    height: 210px; 
-    flex-shrink: 0; 
-    transition: transform 0.5s ease; 
+.timer-wrapper {
+    position: relative;
+    width: 210px;
+    height: 210px;
+    flex-shrink: 0;
+    transition: transform 0.5s ease;
 }
-.pomo-note-wrapper { 
+.pomo-note-wrapper {
     width: 0;
-    height: 210px; 
-    overflow: hidden; 
-    opacity: 0; 
-    display: flex; 
+    height: 210px;
+    overflow: hidden;
+    opacity: 0;
+    display: flex;
     flex-direction: column;
     justify-content: center;
-    transition: flex-grow 0.5s ease, opacity 0.5s ease, padding 0.5s ease; 
+    transition: flex-grow 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
     flex-grow: 0;
 }
 
 /* When edit mode is active (handled by JS adding class .pomo-editing to the parent) */
 .card.pomo-editing .timer-wrapper { transform: NONE; }
-.card.pomo-editing .pomo-note-wrapper { 
-    width: auto; 
-    flex-grow: 1; 
-    opacity: 1; 
-    padding-left: 20px; 
+.card.pomo-editing .pomo-note-wrapper {
+    width: auto;
+    flex-grow: 1;
+    opacity: 1;
+    padding-left: 20px;
 }
 
 #pomo-side-note {
-    width: 100%; 
-    height: 100%; 
-    background: transparent; 
-    border: 1px dashed var(--dim-border); 
-    border-radius: 10px; 
-    padding: 15px; 
-    color: var(--text-main); 
-    resize: none; 
-    font-size: 0.9rem;
-    outline: none;
-    box-sizing: border-box; 
+width: 100%;
+height: 100%;
+background: transparent;
+border: 1px dashed var(--dim-border);
+border-radius: 10px;
+padding: 15px;
+color: var(--text-main);
+resize: none;
+font-size: 0.9rem;
+outline: none;
+box-sizing: border-box;
 }
 
 #status-main {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px;          
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+max-width: 200px;
+display: block;
+margin-left: auto;
+margin-right: auto;
 }
 h1#time-main.text-mode {
     font-size: 1.8rem;
     max-width: 180px;
     max-height: 5.6rem;
-    
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    word-break: normal;        
-    
+    word-break: normal;
+
     text-align: center;
     display: block;
 }
@@ -311,8 +311,8 @@ button.hidden { display: none; }
 
 /* Body Modes */
 body.mode-full #pomodoro-main { padding: 10px 20px; border-radius: 10px; }
-body.mode-full #pomodoro-main .timer-wrapper, 
-body.mode-full #pomodoro-main .pomo-note-wrapper, 
+body.mode-full #pomodoro-main .timer-wrapper,
+body.mode-full #pomodoro-main .pomo-note-wrapper,
 body.mode-full #btn-pomo-edit { display: none; } /* Hide complicated stuff in full mode */
 body.mode-full #pomodoro-main .linear-wrapper { display: flex; opacity: 1; }
 body.mode-full #topics-panel { flex-grow: 100; }
@@ -375,21 +375,21 @@ tr.completed .topic-name { text-decoration: line-through; text-decoration-thickn
 footer { padding: 0px 0; flex-shrink: 0; width: 100%; text-align: center; background: transparent; z-index: 10; }
 footer p { font-size: 10px; color: var(--text-muted); opacity: 0.6; margin:0; margin-top: -15px; }
 
-/* ============================================ 
-   CUSTOM CHECKBOX (Topics)
-   ============================================ */
+/* ============================================
+ *   CUSTOM CHECKBOX (Topics)
+ *   ============================================ */
 .topic-check {
     /* 1. Remove o estilo padrão do Windows/Mac/Android */
     margin-right:5px;
 }
 
-/* ============================================ 
-   MOBILE TWEAKS (Screens < 768px)
-   ============================================ */
+/* ============================================
+ *   MOBILE TWEAKS (Screens < 768px)
+ *   ============================================ */
 
-.mob-dock-btn { 
+.mob-dock-btn {
     display: none;
-} 
+}
 @media (max-width: 768px) {
 
     :root {
@@ -403,102 +403,102 @@ footer p { font-size: 10px; color: var(--text-muted); opacity: 0.6; margin:0; ma
     }
 
     /* --- 1. BOTTOM DOCK --- */
-    #top-dock { 
-        position: fixed;
-        top: auto;          
-        bottom: 0;          
-        width: 100%; 
-        height: var(--mob-h);
-        
-        background-color: var(--card-bg);
-        z-index: var(--mob-z-dock);
-        justify-content: space-between; 
-        
-        border-radius: 15px 15px 0 0;
-        box-shadow: 0 -4px 10px var(--dim-shadow);
+    #top-dock {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: var(--mob-h);
+
+    background-color: var(--card-bg);
+    z-index: var(--mob-z-dock);
+    justify-content: space-between;
+
+    border-radius: 15px 15px 0 0;
+    box-shadow: 0 -4px 10px var(--dim-shadow);
     }
 
     /* Hamburger Menu Buttons */
-    .mob-dock-btn { 
+    .mob-dock-btn {
         padding: 0 5px 0 5px ;
-        display: flex; 
-        font-size: 30px; 
+        display: flex;
+        font-size: 30px;
         background-color: transparent;
         color: var(--text-main);
         height: 100%;
-    } 
+    }
 
     /* --- 2. LAYOUT & SPACING --- */
     .spacer { display: none; }
-    
-    .container { 
-        overflow-y: auto; 
-        padding-top: var(--mob-pad);    
+
+    .container {
+        overflow-y: auto;
+        padding-top: var(--mob-pad);
         padding-bottom: 42px; /* Extra space so content isn't hidden behind dock */
     }
-    
+
     /* Global Text Visibility Fixes */
     #header-info, #float-activity, .task-name { display: block; }
-    
+
     /* Card Width Adjustment */
-    .card, :root { --width-card: 93%; } 
+    .card, :root { --width-card: 93%; }
 
     /* --- 3. SIDEBAR FULL SCREEN --- */
-    .sidebar { 
-        width: 100% !important; 
+    .sidebar {
+        width: 100% !important;
         border: none;
         box-shadow: none;
-        z-index: var(--mob-z-side); 
-        
+        z-index: var(--mob-z-side);
+
         /* Position: Top to Dock */
         top: 0;
-        bottom: var(--mob-h); 
-        height: auto; 
+        bottom: var(--mob-h);
+        height: auto;
     }
-    
+
     .sidebar.left { transform: translateX(-100%); }
     .sidebar.right { transform: translateX(100%); }
     .sidebar.open { transform: translateX(0) !important; }
-    
+
     .trigger-area { display: none; }
 
     /* --- 4. TIMER PAGE: GRID LAYOUT --- */
     .task-input-row {
         display: grid !important;
         /* Col 1: Fluid | Col 2: Fixed Button Size */
-        grid-template-columns: 1fr var(--mob-h) !important; 
+        grid-template-columns: 1fr var(--mob-h) !important;
         grid-template-rows: auto auto !important;
         gap: 5px !important;
-        
-        background: transparent !important; 
-        padding: 0 !important; 
+
+        background: transparent !important;
+        padding: 0 !important;
         border: none !important;
         align-items: stretch !important;
     }
 
     /* Row 1: Name (Col 1) */
-    #task-name { 
-        grid-column: 1 / 2; 
-        grid-row: 1 / 2;
-        width: 100% !important; 
-        min-height: var(--mob-h);
-        font-size: var(--mob-font-md);
+    #task-name {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    width: 100% !important;
+    min-height: var(--mob-h);
+    font-size: var(--mob-font-md);
     }
 
     /* Row 1: Color (Col 2) */
-    #task-color { 
-        grid-column: 2 / 3; 
-        grid-row: 1 / 2;
-        width: 100% !important; 
-        height: 100% !important; 
-        min-height: var(--mob-h);
-        padding: 0; border: none;
-        background: none;
+    #task-color {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: var(--mob-h);
+    padding: 0; border: none;
+    background: none;
     }
 
     /* Row 2: Time Inputs (Col 1) */
     .time-inputs {
-        grid-column: 1 / 2; 
+        grid-column: 1 / 2;
         grid-row: 2 / 3;
         display: flex !important;
         justify-content: space-between !important;
@@ -506,41 +506,41 @@ footer p { font-size: 10px; color: var(--text-muted); opacity: 0.6; margin:0; ma
         gap: 5px;
     }
     .time-inputs input {
-        width: 32% !important; 
+        width: 32% !important;
         min-height: var(--mob-h);
         font-size: var(--mob-font-md);
         text-align: left;
         padding: 10px;
     }
-    .time-inputs span { display: none !important; } 
+    .time-inputs span { display: none !important; }
 
     /* Row 2: Add Button (Col 2) */
     #btn-add-task {
-        grid-column: 2 / 3; 
-        grid-row: 2 / 3;
-        width: 100% !important; 
-        height: 100% !important;
-        min-height: var(--mob-h);
-        padding: 0 !important;
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: var(--mob-h);
+    padding: 0 !important;
     }
 
     /* --- 5. TIMER PAGE: TASK LIST --- */
     .task-item {
         padding-right: 0 !important;
-        font-size: var(--mob-font-lg); 
+        font-size: var(--mob-font-lg);
     }
-    
+
     .btn-del-task {
         /* Large touch target */
         min-width: 30px !important;
         height: 30px !important;
-        font-size: 1.7rem !important; 
-        
-        display: flex; 
-        align-items: center; 
+        font-size: 1.7rem !important;
+
+        display: flex;
+        align-items: center;
         justify-content: center;
-        
-        background: var(--dim-card); 
+
+        background: var(--dim-card);
         border-radius: 8px;
         margin: -5px 5px 0 0 !important;
     }
@@ -549,16 +549,16 @@ footer p { font-size: 10px; color: var(--text-muted); opacity: 0.6; margin:0; ma
     .nav-btn { font-size: 1rem; padding: var(--mob-pad); }
     .edit-pomo-btn { width: var(--mob-h); height: var(--mob-h); }
     .input-group input { font-size: var(--mob-font-md); width: 100%; height: var(--mob-h); }
-    
-    #floating-widget { bottom: 80px; right: 15px; } 
 
-    .h-desk { display: none; } 
-    
+    #floating-widget { bottom: 80px; right: 15px; }
+
+    .h-desk { display: none; }
+
     /* Container layout */
-    #header-info { 
-        align-items: center;
-        justify-content: center;
-        line-height: 1.2;
+    #header-info {
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
     }
 
     /* Activity Name (Top line) */
@@ -574,3 +574,279 @@ footer p { font-size: 10px; color: var(--text-muted); opacity: 0.6; margin:0; ma
         margin-top: -2px; /* Pull closer to activity */
     }
 }
+
+/* ============================================
+ *   TIMER TABS SYSTEM
+ *   ============================================ */
+#tab-bar-footer {
+position: absolute;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 45px;
+background: var(--card-bg);
+border-top: 1px solid var(--dim-border);
+display: flex;
+align-items: center;
+padding: 0 5px;
+gap: 5px;
+z-index: 10;
+border-radius: 0 0 var(--radius-main) var(--radius-main);
+}
+
+#tabs-scroll-area {
+flex: 1;
+display: flex;
+gap: 5px;
+overflow-x: auto;
+height: 100%;
+align-items: center;
+scrollbar-width: none; /* Firefox */
+-ms-overflow-style: none; /* IE */
+padding-right: 10px;
+}
+#tabs-scroll-area::-webkit-scrollbar { display: none; }
+
+.timer-tab {
+    flex: 1; /* Tenta ocupar espaço igual */
+    min-width: 100px; /* Mas não encolhe demais */
+    max-width: 200px;
+    height: 35px;
+    background: var(--dim-bg);
+    border: 1px solid var(--dim-border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    user-select: none;
+    flex-shrink: 0; /* Impede de amassar se tiver muitas */
+}
+
+/* Estado Ativo (ON) */
+.timer-tab.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    box-shadow: 0 2px 5px var(--dim-shadow);
+}
+
+.timer-tab:hover:not(.active) {
+    background: rgba(0,0,0,0.1);
+}
+[data-theme="dark"] .timer-tab:hover:not(.active) {
+    background: rgba(255,255,255,0.1);
+}
+
+/* Input de Renomear a Aba */
+.tab-name-input {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: bold;
+    width: 100%;
+    outline: none;
+    pointer-events: none; /* Clica na aba, não no input inicialmente */
+    text-align: center;
+}
+
+.timer-tab.active .tab-name-input {
+    color: white;
+    pointer-events: auto; /* Permite editar quando ativa */
+}
+
+/* Botão de Fechar Aba */
+.tab-close-btn {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+    opacity: 0; /* Escondido por padrão */
+    transition: opacity 0.2s;
+    padding: 0;
+}
+
+.timer-tab:hover .tab-close-btn,
+.timer-tab.active .tab-close-btn {
+    opacity: 1;
+}
+
+.timer-tab.active .tab-close-btn { color: rgba(255,255,255,0.7); }
+.timer-tab.active .tab-close-btn:hover { background: rgba(255,255,255,0.2); color: white; }
+.tab-close-btn:hover { background: var(--accent-red); color: white; }
+
+/* Botão de Adicionar Nova Aba */
+#btn-add-tab {
+width: 35px;
+height: 35px;
+border-radius: 50%;
+background: var(--dim-bg);
+color: var(--text-muted);
+font-size: 1.2rem;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+padding: 0;
+border: 1px dashed var(--dim-border);
+}
+#btn-add-tab:hover {
+background: var(--accent-green);
+color: white;
+border-style: solid;
+}
+
+/* ============================================
+ *   TIMER TABS SYSTEM (CORRIGIDO)
+ *   ============================================ */
+#tab-bar-footer {
+position: absolute; bottom: 0; left: 0; width: 100%; height: 45px;
+background: var(--card-bg); border-top: 1px solid var(--dim-border);
+display: flex; align-items: center; padding: 0 5px; gap: 5px; z-index: 10;
+border-radius: 0 0 var(--radius-main) var(--radius-main);
+}
+
+#tabs-scroll-area {
+flex: 1; display: flex; gap: 5px; height: 100%; align-items: center;
+overflow-x: auto;
+cursor: grab; /* Indica que pode arrastar */
+padding-right: 10px;
+scrollbar-width: none; -ms-overflow-style: none; /* Esconde barra nativa */
+user-select: none; /* Evita selecionar texto ao arrastar */
+}
+#tabs-scroll-area:active { cursor: grabbing; }
+#tabs-scroll-area::-webkit-scrollbar { display: none; }
+
+.timer-tab {
+    flex: 0 0 auto; /* Importante: Não deixa encolher nem esticar demais */
+    width: 130px; /* Tamanho fixo fica mais organizado */
+    height: 35px;
+    background: var(--dim-bg); border: 1px solid var(--dim-border);
+    border-radius: 6px;
+    display: flex; align-items: center; padding: 0 2px 0 8px;
+    cursor: pointer; transition: all 0.2s; position: relative;
+}
+
+.timer-tab.active {
+    background: var(--accent-blue); border-color: var(--accent-blue);
+    box-shadow: 0 2px 5px var(--dim-shadow);
+}
+.timer-tab:hover:not(.active) { background: rgba(0,0,0,0.1); }
+[data-theme="dark"] .timer-tab:hover:not(.active) { background: rgba(255,255,255,0.1); }
+
+/* Input de Renomear */
+.tab-name-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-align: left;
+    min-width: 0;
+
+    /* O SEGREDO: O mouse ignora o input, o clique passa direto pra aba */
+    pointer-events: none;
+    cursor: grab; /* O cursor mostra que é pra arrastar/clicar a aba */
+}
+.timer-tab.active .tab-name-input {
+    color: white;
+}
+.timer-tab.editing .tab-name-input {
+    pointer-events: auto; /* Agora o mouse funciona no texto */
+    cursor: text;
+    background: rgba(0,0,0,0.2); /* Fundo sutil pra saber que tá editando */
+    border-radius: 4px;
+    padding: 0 5px;
+}
+
+/* Botão Fechar */
+.tab-close-btn {
+    width: 20px; height: 20px;
+    background: transparent; border: none; color: var(--text-muted);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; opacity: 0; transition: opacity 0.2s; cursor: pointer;
+}
+.timer-tab:hover .tab-close-btn, .timer-tab.active .tab-close-btn { opacity: 1; }
+.tab-close-btn:hover { background: var(--accent-red); color: white; }
+.timer-tab.active .tab-close-btn { color: rgba(255,255,255,0.7); }
+.timer-tab.active .tab-close-btn:hover { background: rgba(255,255,255,0.3); color: white; }
+
+#btn-add-tab {
+width: 35px; height: 35px; border-radius: 50%;
+background: var(--dim-bg); color: var(--text-muted);
+font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+flex-shrink: 0; padding: 0; border: 1px dashed var(--dim-border); cursor: pointer;
+}
+#btn-add-tab:hover { background: var(--accent-green); color: white; border-style: solid; }
+
+/* ============================================
+ *   WEEK VIEW STYLES
+ *   ============================================ */
+.day-header {
+    background: var(--card-bg); /* Cor do fundo pra cobrir o texto ao rolar */
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 900;
+    padding: 10px 5px 5px 0;
+    border-bottom: 2px solid var(--dim-border);
+    margin-top: 15px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    /* Sticky: O título do dia fica preso no topo enquanto rola as tarefas dele */
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+/* Destaque visual para o dia de HOJE na visão semanal */
+.day-group.is-today .day-header {
+    color: var(--accent-blue);
+    border-bottom-color: var(--accent-blue);
+}
+
+.day-group.is-today {
+    background: var(--dim-bg);
+    border-radius: 8px;
+    margin: -5px; /* Compensa o padding pra encostar nas bordas */
+    padding: 5px;
+}
+
+/* Date Picker Customization */
+#schedule-date-picker {
+background: var(--dim-bg);
+border: 1px solid var(--dim-border);
+color: var(--text-muted);
+border-radius: 5px;
+padding: 4px;
+font-family: var(--font-stack);
+font-size: 0.8rem;
+outline: none;
+cursor: pointer;
+width: 150px; /* Tamanho fixo compacto */
+}
+
+/* Ícone do calendário invertido no dark mode para ficar visível */
+[data-theme="dark"] #schedule-date-picker::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+#schedule-date-picker:hover, #schedule-date-picker:focus {
+border-color: var(--accent-blue);
+color: var(--text-main);
+}
+

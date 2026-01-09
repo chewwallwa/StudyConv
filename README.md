@@ -1,60 +1,104 @@
-## How to load the cronogram
+Application under development.
 
-Faça sua planilha no meu modelo, rode o script (instruções abaixo), para transformar a planilha visual em linear data pro site. Publique o link e cole no script.js.
+Sorry for the portuguese comments and lack of simplicity and optimization, it was intended for use, and has heavy hands of AI.
 
-tag "estudo": 50 min focus, 5 min racuperacao ativa, 5 min rest
-intervalo entre atividades "estudo" com nome diferente: 40 min focus, 5 min racuperacao ativa, 15 min rest
-outras: mostra timer pra proxima atividade "estudo" e pomodoro manual
+Don't bother, I'm reeally using it for my activities :) I may be occupied. Tell me if you want the project for you :)
 
-faça o mesmo pra aba "material" da planilha (links diferentes pra cada aba)
+The objective is to have a place where I can enter, and have no more to think. Everything is there.
 
-## How to turn a cronogram in raw data for the site
+# Site map:
 
-<details><summary>see</summary>
+## right sidebar
 
-## 📅 Gerador de Cronograma Escolar/Acadêmico (Google Sheets)
+- Methods
+    - Shows two field of text based on the activity. (I use it for for study methods, or details about the activity)
+    - settings button
+        - google sheet links input (see apendice 2)
+        - telegram bot token input for notifies (see the apendice 3)
+        - google drive sync of configs and use (see the apendice 1)
+        - Export backup file (see the apendice 1)
+    - light/dark mode button
+    - notes 
+    
+## left sidebar 
 
-Este script automatiza a criação de uma agenda linear (database) a partir de um cronograma visual semanal no Google Sheets. Ideal para estudantes e concurseiros que planejam estudos por blocos e precisam contabilizar horas líquidas.
+- Schedule
+    - shows the day schedule
+    - you can check the schedule of a specific day (if the day has one)
+    - you can see a compact list of the schedule of some before days after the current one.
+- Notes area
+- Menu
+    - main
+    - pomodoro
+    - timer
+    
+PAGES ------------
 
-### 🚀 O que ele faz
-Transforma uma tabela visual (Blocos de Horários) em uma lista de dados contendo:
-- Nome do Curso/Matéria
-- Data exata (dd/mm/aaaa)
-- Dia da Semana
-- Hora
-- Atividade
+## main
 
-Ele resolve automaticamente conflitos de datas, corrige fusos horários e processa múltiplos blocos de uma vez.
+- timer
+    - depends on your schedule. 
+    - if it is a "study" tagged activity, it will show a 50 min timer for focus, 5 min for review and 5 min for rest, util that activity ends
+    - if it is a "others" tagged activity, it will show the name of the activity and the hour of the next "study" one.
+- topics
+    - it shows a text text based on the activity and 3 buttons you can set what they are for. (shows the topics of a subject, with buttons to search in youtube with the name of a teacher or a site of the topic or to just copy the topic name)
+    - you can choose maximize, normal size and show on hover modes.
+- notes: on the side of the main timer. hide/show.
+    
+## pomodoro
 
-## ⚠️ Avisos Importantes (Leia antes de usar)
+- common pomodoro with custom focus and rest timer
+- a floating (not dragable) widget that shows a mini version of main page.
+    
+## timer
 
-### 1. Verifique o Código
-Como boa prática de segurança, **nunca execute scripts desconhecidos** na sua conta Google sem antes ler o código. O código é aberto (`.gs` ou `.js`) e você pode conferir que ele apenas lê os dados da aba `main` e escreve na aba `DB_Final`. Ele não acessa seu e-mail, drive ou contatos.
+- sequential timers, you can give it names and colors. one will start when the other ends, on the order you created.
+- you can create various lists of timers
+- the same floating widget that shows a mini version of main page.
+            
+# ROADAMP ------------
 
-### 2. Permissão de Execução (Google)
-Na primeira vez que rodar, o Google mostrará um aviso de "Aplicativo não verificado" (porque este script não foi publicado na loja oficial). Para autorizar:
-1. Clique em **Revisar Permissões**.
-2. Selecione sua conta.
-3. Na tela de "O Google não verificou este app", clique em **Avançado**.
-4. Clique no link no rodapé: **Acessar [Nome do Projeto] (não seguro)**.
-5. Clique em **Permitir**.
-*Isso é padrão para qualquer script pessoal no Google Sheets.*
+- add buttons or drag&drop to reorder the timers on timer page.
 
----
+- add a special tag or more tags that overide the common ones, to create a list of special events.
 
-## 🛠️ Como Usar
+- Don't use google for sync and sheets...
 
-1. Abra sua planilha no Google Sheets.
-2. Vá em **Extensões** > **Apps Script**.
-3. Apague qualquer código existente e cole o conteúdo do arquivo `script.js` deste repositório.
-4. Salve o projeto.
-5. Volte para a planilha e atualize a página (F5).
-6. Um novo menu **"📅 Cronograma"** aparecerá no topo. Clique em **Atualizar Agenda**.
+- share my bot for your nofities?
 
-## 📋 Requisitos da Planilha
+- use supabase or any other login to multi device sync and login
 
-A aba principal deve se chamar `main` e seguir o layout:
-* **Colunas A-H:** Grade de horários (A=Hora, B=Dom... H=Sab).
-* **Colunas I-L:** Metadados dos blocos (Curso, Bloco, Data Início, Data Fim).
+- smartwatch support
 
-</details>
+- linux (quickshell?) and android versions?
+
+- add custom tags with custom timers? may be too difficult to me and gemini :) it is hardcoded for now
+
+- add option to eddit the schedule inside the site? may be out of scope.
+
+# APENDICE 1: MULTI-DEVICE SYNC ------------
+
+For now it is shity :) It is another google script that recieves content and save on drive. It has password so nobody even with the link will change your things... The script will be shared.
+
+What is synced: 
+
+- theme light/dark
+- open on the last page used
+- what was toggled (if main note area was on and if the state of topics section)
+- all the notes
+- all the timer list tabs and its respectives timers
+
+# APENDICE 2: GOOGLE SHEETS ------------
+
+There are 3 sheets: 
+
+- "linear_data" for the schedule + tags
+- "material" for the content of "menu > main > topics"
+- "methods" for the per activity texts shown in "right sidebar > methods"
+
+# APENDICE 3: TELEGRAM NOTIFIY ------------
+
+For the sake of simplicity, I'm using my own bot and will not share for now :) it is simple to create. but I will share the google script and triggers that sends the notify :)
+
+
+
